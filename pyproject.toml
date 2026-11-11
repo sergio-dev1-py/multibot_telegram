@@ -1,0 +1,15 @@
+[project]
+name = "hermes-plugin-multi-telegram"
+version = "1.1.1"
+description = "Multiple Telegram bot identities for one Hermes Agent profile"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Multi-Telegram Hermes plugin contributors" }]
+dependencies = [
+  "python-telegram-bot[httpx,socks]==22.8",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"

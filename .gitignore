@@ -1,0 +1,28 @@
+# Secrets / local profile data
+.env
+.env.*
+!.env.example
+*.token
+secrets.json
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# Local data written by the plugin (normally under HERMES_HOME, but keep
+# stray copies out of the repo)
+plugin-data/
+.multi-telegram-data/
+status.json
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

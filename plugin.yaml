@@ -1,0 +1,24 @@
+name: multi-telegram
+label: Telegram (multi-bot)
+kind: platform
+version: 1.1.1
+description: >
+  Run several Telegram bot identities through ONE Hermes profile and agent.
+  Each bot gets its own token, display identity, allowlists, purpose,
+  welcome message, session mode and optional shared-session group. Replies
+  always leave through the bot that received the triggering message; bots in
+  the same shared-session group continue one real Hermes transcript for the
+  same external chat/user/topic.
+author: Multi-Telegram Hermes plugin contributors
+license: MIT
+requires_hermes: ">=0.23.0"
+tags:
+  - telegram
+  - messaging
+  - multi-bot
+  - platform
+python_dependencies:
+  - "python-telegram-bot[httpx,socks]==22.8"
+config_keys:
+  - gateway.platforms.telegram_multi
+  - platforms.telegram_multi

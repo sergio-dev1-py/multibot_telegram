@@ -1,0 +1,89 @@
+# Example deployment: three Telegram identities for one Hermes profile.
+#
+# This is a FICTIONAL NovaDesk demo. Bot ids, display names, allowlists,
+# session modes and shared_context are all user configuration; nothing here is
+# hardcoded in the plugin. Replace the values with your own deployment.
+#
+# Copy the gateway block into your profile config.yaml and put the three
+# TELEGRAM_MULTI_*_TOKEN values in the profile .env / secret manager.
+# Never put a token in this file.
+
+gateway:
+  platforms:
+    telegram_multi:
+      enabled: true
+      reply_to_mode: first
+      extra:
+        # Explicit fallback for raw chat ids used by cron/operator sends.
+        # Live turns never use it.
+        default_bot: soporte
+        connect_wait_seconds: 18
+
+        # Optional context shared by every bot in this deployment. It is empty
+        # by default and has no effect unless set. Keep it short; put long
+        # company documents in the Hermes workspace/SOUL.md/skills instead.
+        shared_context: |
+          NovaDesk is a fictional helpdesk SaaS used for this demo.
+          Plans: Starter 19 USD/user/month, Growth 49 USD/user/month,
+          Enterprise custom pricing. Support hours are 09:00-18:00 UTC-5.
+          Support does not quote prices. Sales does not perform deep technical
+          diagnosis. Technical does not offer discounts.
+
+        bots:
+          # 1) Isolated support identity: its own transcript per user/chat/topic.
+          - id: soporte
+            display_name: "NovaDesk Support"
+            token_env: TELEGRAM_MULTI_SOPORTE_TOKEN
+            enabled: true
+            session_mode: isolated
+            allowed_users:
+              - 123456789
+            allowed_chats: []
+            group_require_mention: true
+            purpose: "First-line support and FAQ for NovaDesk."
+            instructions: |
+              Answer basic product questions from the shared context.
+              Do not quote prices or promise discounts.
+              If the case is technical, summarize the problem and direct the
+              customer to the technical bot. Never invent company facts.
+            welcome_message: "Hi! I'm NovaDesk Support. What can I help you with?"
+            max_attachment_mb: 20
+            # Demo-safe overlay: no persistent memory, no session search, no
+            # terminal/file. Remove or widen it if the deployment needs those
+            # tools. Transcript isolation does not isolate profile memory.
+            toolsets: [web, vision, todo]
+
+          # 2) Shared sales identity: continues one transcript with technical.
+          - id: ventas
+            display_name: "NovaDesk Sales"
+            token_env: TELEGRAM_MULTI_VENTAS_TOKEN
+            enabled: true
+            session_mode: shared
+            shared_group: novadesk
+            allowed_users:
+              - 123456789
+            group_require_mention: true
+            purpose: "Commercial qualification and plans for NovaDesk."
+            instructions: |
+              Qualify the customer's need and explain plans and prices from the
+              shared context. Do not perform deep technical diagnosis; hand the
+              context to technical when implementation is discussed.
+            welcome_message: "Hi! Sales here. Ask me about plans and pricing."
+            toolsets: [web, vision, todo]
+
+          # 3) Shared technical identity in the same transcript group.
+          - id: tecnico
+            display_name: "NovaDesk Technical"
+            token_env: TELEGRAM_MULTI_TECNICO_TOKEN
+            enabled: true
+            session_mode: shared
+            shared_group: novadesk
+            allowed_users:
+              - 123456789
+            group_require_mention: true
+            purpose: "Technical implementation and troubleshooting for NovaDesk."
+            instructions: |
+              Ask for version, logs and reproduction steps. Use the shared
+              transcript with sales. Do not offer discounts or change pricing.
+            welcome_message: "Technical here. What are you building?"
+            toolsets: [web, vision, todo]
